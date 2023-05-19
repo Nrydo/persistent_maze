@@ -1,0 +1,11 @@
+<RCC>
+    <qresource>
+        <file>textures/wall.png</file>
+        <file>textures/floor.png</file>
+        <file>textures/player.png</file>
+        <file>textures/key.png</file>
+        <file>textures/opened_door.png</file>
+        <file>textures/closed_door.png</file>
+        <file>textures/finish.png</file>
+    </qresource>
+</RCC>
