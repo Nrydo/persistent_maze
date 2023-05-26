@@ -9,6 +9,6 @@ set(CMAKE_AUTOUIC ON)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets Multimedia REQUIRED)
 
-file(GLOB SRC_FILES *.cpp Items/*.cpp Objects/*.cpp)
+file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_executable(persistent_maze ${SRC_FILES} resources.qrc)
 target_link_libraries(persistent_maze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Multimedia)
