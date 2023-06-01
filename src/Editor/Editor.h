@@ -14,7 +14,7 @@ class Editor : public QWidget {
     Q_OBJECT
 
 public:
-    Editor(int width_, int height_, int field_width_, int field_height_, QWidget* parent = nullptr);
+    Editor(int width_, int height_, QWidget* parent = nullptr);
 
 private:
     EditorSpace* space;

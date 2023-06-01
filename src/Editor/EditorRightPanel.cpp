@@ -10,10 +10,18 @@ EditorRightPanel::EditorRightPanel(int width_, int height_, QWidget* parent) :
     layout->addWidget(AddButton("key"));
     layout->addWidget(AddButton("box"));
     layout->addWidget(AddButton("player2"));
+    layout->addWidget(AddButton("add_v"));
+    layout->addWidget(AddButton("sub_v"));
+    layout->addWidget(AddButton("add_h"));
+    layout->addWidget(AddButton("sub_h"));
 
     codes.push_back("k");
     codes.push_back("b");
     codes.push_back("p");
+    codes.push_back("_av");
+    codes.push_back("_sv");
+    codes.push_back("_ah");
+    codes.push_back("_sh");
 
 }
 

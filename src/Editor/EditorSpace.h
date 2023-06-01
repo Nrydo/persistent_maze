@@ -18,6 +18,8 @@ public:
     void ChooseCurrent(QString code);
 
 private:
+    int field_height;
+    int field_width;
     QGraphicsScene* scene;
     double k_scale;
     EditorField* field;

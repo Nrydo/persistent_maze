@@ -26,5 +26,9 @@
         <file>resources/textures/door.png</file>
         <file>resources/textures/finish.png</file>
         <file>resources/textures/eraser.png</file>
+        <file>resources/textures/add_v.png</file>
+        <file>resources/textures/sub_v.png</file>
+        <file>resources/textures/add_h.png</file>
+        <file>resources/textures/sub_h.png</file>
     </qresource>
 </RCC>

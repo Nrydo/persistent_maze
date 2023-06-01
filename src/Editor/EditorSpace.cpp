@@ -3,6 +3,8 @@
 
 EditorSpace::EditorSpace(int field_height_, int field_width_, QWidget* parent) :
         QGraphicsView(parent),
+        field_height(field_height_),
+        field_width(field_width_),
         scene(new QGraphicsScene(this)),
         k_scale(2),
         player(new Player) {
@@ -13,9 +15,9 @@ EditorSpace::EditorSpace(int field_height_, int field_width_, QWidget* parent) :
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    int cells_count = field_height_ * field_width_ - 1;
-    field = new EditorField(QString::number(field_height_) + "-" +
-                            QString::number(field_width_) + "|0-0|F" +
+    int cells_count = field_height * field_width - 1;
+    field = new EditorField(QString::number(field_height) + "-" +
+                            QString::number(field_width) + "|0-0|F" +
                             QString("-F").repeated(cells_count) + "|", player);
 
     setScene(scene);
@@ -105,4 +107,31 @@ void EditorSpace::ObjectClick(QPoint cell) {
 
 void EditorSpace::ChooseCurrent(QString code) {
     current = code;
+    if (current[0] == '_') {
+        if (current[1] == 'a') {
+            if (current[2] == 'v') {
+                field_height++;
+            } else {
+                field_width++;
+            }
+        } else {
+            if (current[2] == 'v') {
+                if (field_height > 1) {
+                    field_height--;
+                }
+            } else {
+                if (field_width > 1) {
+                    field_width--;
+                }
+            }
+        }
+        field->RemovePlayer();
+        delete field;
+        field = new EditorField(QString::number(field_height) + "-" +
+                                QString::number(field_width) + "|0-0|F" +
+                                QString("-F").repeated(field_height * field_width - 1) + "|", player);
+        scene->addItem(field);
+        connect(field, SIGNAL(Clicked(QPoint)), this, SLOT(ObjectClick(QPoint)));
+    }
+    setFocus();
 }

@@ -37,7 +37,7 @@ void PersistentMaze::OpenEditor() {
     auto last_editor = stack->widget(3);
     stack->removeWidget(last_editor);
     delete last_editor;
-    stack->insertWidget(3, new Editor(width(), height(), 5, 5, stack));
+    stack->insertWidget(3, new Editor(width(), height(), stack));
     stack->setCurrentIndex(3);
     connect(stack->widget(3), SIGNAL(StartGame(QString)), this, SLOT(StartGame(QString)));
     connect(stack->widget(3), SIGNAL(ReturnToMainMenu()), this, SLOT(OpenMainMenu()));

@@ -1,13 +1,14 @@
 #include "Editor.h"
 #include <cmath>
 
-Editor::Editor(int width_, int height_, int field_height_, int field_width_, QWidget* parent) :
+Editor::Editor(int width_, int height_, QWidget* parent) :
         QWidget(parent),
-        space(new EditorSpace(field_height_, field_width_, parent)),
         left_panel(new EditorLeftPanel(width_, height_, this)),
         right_panel(new EditorRightPanel(width_, height_, this)) {
 
     resize(width_, height_);
+
+    space = new EditorSpace(5, 5, this);
 
     space->setFocus();
 
