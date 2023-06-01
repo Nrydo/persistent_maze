@@ -10,11 +10,11 @@ void AnimationController::AddAnimation(Animation* animation) {
     objects.push_back(animation);
 }
 
-void AnimationController::AddAnimationMove(QGraphicsItem *object, const std::deque<QPointF>& way, double speed) {
+void AnimationController::AddMoveAnimation(QGraphicsItem *object, const std::deque<QPointF>& way, double speed) {
     objects.push_back(new AnimationMove(object, way, speed, this));
 }
 
-void AnimationController::AddAnimationAppearance(QGraphicsItem *object, double speed) {
+void AnimationController::AddAppearanceAnimation(QGraphicsItem *object, double speed) {
     objects.push_back(new AnimationAppearance(object, speed, this));
 }
 

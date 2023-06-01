@@ -1,36 +1,69 @@
 #include "PersistentMaze.h"
+#include <QTextStream>
+#include <QDebug>
 
-PersistentMaze::PersistentMaze(int width, int height) :
-        states(new QStateMachine(this)),
-        menu(new QState(states)),
-        game(new QState(states)),
-        creator(new QState(states)) {
+PersistentMaze::PersistentMaze(int width_, int height_) :
+        stack(new QStackedWidget(this)) {
 
-    resize(width, height);
+    if (width_ > 0) {
+        resize(width_, height_);
+    }
+    else {
+        showFullScreen();
+    }
 
-    states->setInitialState(menu);
+    stack->resize(width(), height());
+    stack->addWidget(new MainMenu(width(), height(), stack));
+    connect(stack->widget(0), SIGNAL(StartGame(int)), this, SLOT(StartGame(int)));
+    connect(stack->widget(0), SIGNAL(Exit()), this, SLOT(Exit()));
+    connect(stack->widget(0), SIGNAL(OpenEditor()), this, SLOT(OpenEditor()));
+    stack->addWidget(new QWidget);
+    stack->addWidget(new FinishMenu(width(), height(), stack));
+    connect(stack->widget(2), SIGNAL(OpenMainMenu()), this, SLOT(OpenMainMenu()));
+    stack->addWidget(new QWidget);
 
-    current = new MainMenu(width, height, this);
-    connect(current, SIGNAL(StartGame()), this, SLOT(StartGame()));
-    connect(current, SIGNAL(Exit()), this, SLOT(Exit()));
 }
-
 
 void PersistentMaze::OpenMainMenu() {
-    disconnect(current, SIGNAL(GameFinished()), this, SLOT(OpenMainMenu()));
-    delete current;
-    current = new MainMenu(width(), height(), this);
-    current->show();
-    connect(current, SIGNAL(StartGame()), this, SLOT(StartGame()));
-    connect(current, SIGNAL(Exit()), this, SLOT(Exit()));
+    stack->setCurrentIndex(0);
 }
 
-void PersistentMaze::StartGame() {
-    disconnect(current, SIGNAL(StartGame()), this, SLOT(StartGame()));
-    delete current;
-    current = new Game(width(), height(), 5, 5, "F-F-F-W-F-F-F-F-B-F-W-D-W-W-W-F-F-F-W-E-F-F-A,0-D-F|K,1,4-B,3,1", this);
-    current->show();
-    connect(current, SIGNAL(GameFinished()), this, SLOT(OpenMainMenu()));
+void PersistentMaze::OpenFinishMenu(int time, int travels, int moves) {
+    dynamic_cast<FinishMenu*>(stack->widget(2))->UpdateData(time, travels, moves);
+    stack->setCurrentIndex(2);
+}
+
+void PersistentMaze::OpenEditor() {
+    auto last_editor = stack->widget(3);
+    stack->removeWidget(last_editor);
+    delete last_editor;
+    stack->insertWidget(3, new Editor(width(), height(), 5, 5, stack));
+    stack->setCurrentIndex(3);
+    connect(stack->widget(3), SIGNAL(StartGame(QString)), this, SLOT(StartGame(QString)));
+    connect(stack->widget(3), SIGNAL(ReturnToMainMenu()), this, SLOT(OpenMainMenu()));
+}
+
+void PersistentMaze::StartGame(int number) {
+    QFile file(":resources/levels/game_levels/level" + QString::number(number) + ".txt");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream in(&file);
+        QString line = in.readLine();
+        file.close();
+        StartGame(line);
+    }
+}
+
+void PersistentMaze::StartGame(const QString& level_code) {
+    auto new_game = new Game(width(), height(), level_code, this);
+    auto last_game = stack->widget(1);
+    stack->removeWidget(last_game);
+    delete last_game;
+    stack->insertWidget(1, new_game);
+    stack->setCurrentIndex(1);
+    connect(stack->widget(1), SIGNAL(GameFinished(int,int,int)), this, SLOT(OpenFinishMenu(int,int,int)));
+    connect(stack->widget(1), SIGNAL(ReturnToMainMenu()), this, SLOT(OpenMainMenu()));
+    connect(stack->widget(1), SIGNAL(RestartGame(QString)), this, SLOT(StartGame(QString)));
 }
 
 void PersistentMaze::Exit() {

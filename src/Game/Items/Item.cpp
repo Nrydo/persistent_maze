@@ -14,6 +14,10 @@ Item* Item::Copy() const {
     return new Item(*this);
 }
 
+QString Item::Code() const {
+    return "I";
+}
+
 bool Item::GetColliding() const {
     return colliding;
 }

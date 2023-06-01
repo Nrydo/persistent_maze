@@ -6,24 +6,24 @@
 #include <QStackedWidget>
 #include "Game/Game.h"
 #include "Menu/MainMenu.h"
+#include "Menu/FinishMenu.h"
+#include "Editor/Editor.h"
 
 class PersistentMaze : public QMainWindow {
     Q_OBJECT
 
 public:
-    PersistentMaze(int width, int height);
+    PersistentMaze(int width_ = -1, int height_ = -1);
 
 private:
-    QStateMachine* states;
-    QState* menu;
-    QState* game;
-    QState* creator;
-    QWidget* current;
-    QStackedWidget* widgets;
+    QStackedWidget* stack;
 
 private slots:
     void OpenMainMenu();
-    void StartGame();
+    void OpenFinishMenu(int time, int travels, int moves);
+    void OpenEditor();
+    void StartGame(int number);
+    void StartGame(const QString& level_code);
     void Exit();
 
 };

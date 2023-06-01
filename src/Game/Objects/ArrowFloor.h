@@ -12,6 +12,7 @@ public:
     ArrowFloor(Item* item, int direction_, Field* field_ = nullptr, int x_ = -1, int y_ = -1);
     ArrowFloor(const ArrowFloor& other, Field* field_ = nullptr, int x_ = -1, int y_ = -1);
     ArrowFloor* Copy(Field *field_ = nullptr, int x_ = -1, int y_ = -1) const override;
+    QString Code() const override;
     void Press(Player *player = nullptr) override;
 
 private:

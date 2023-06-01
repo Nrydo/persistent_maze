@@ -12,6 +12,7 @@ public:
     FragileFloor(Item* item, Field* field_ = nullptr, int x_ = -1, int y_ = -1);
     FragileFloor(const FragileFloor& other, Field* field_ = nullptr, int x_ = -1, int y_ = -1);
     FragileFloor* Copy(Field *field_ = nullptr, int x_ = -1, int y_ = -1) const override;
+    QString Code() const override;
     void Release(Player *player = nullptr) override;
 
 };

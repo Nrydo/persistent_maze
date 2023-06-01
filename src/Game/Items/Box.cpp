@@ -2,7 +2,7 @@
 #include "../Field.h"
 
 Box::Box() {
-    setPixmap(QPixmap(":textures/box.png"));
+    setPixmap(QPixmap(":resources/textures/box.png"));
     colliding = true;
 }
 
@@ -10,6 +10,10 @@ Box::Box(const Box& other) : Item(other) {}
 
 Box* Box::Copy() const {
     return new Box(*this);
+}
+
+QString Box::Code() const {
+    return "B";
 }
 
 void Box::Interact(Player* player, Object* object) {
@@ -22,8 +26,12 @@ void Box::Interact(Player* player, Object* object) {
     if ((*object->GetField())[pnx][pny]->GetColliding()) {
         return;
     }
+    auto begin = pos();
     dynamic_cast<Floor*>(object)->SetColliding(false);
     dynamic_cast<Floor*>(object)->RemoveItem();
     (*object->GetField())[pnx][pny]->SetColliding(true);
     object->GetField()->PutItem(this, pnx, pny);
+    auto end = pos();
+    setPos(begin);
+    object->GetAnimationController()->AddMoveAnimation(this, {end}, 2);
 }

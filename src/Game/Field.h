@@ -2,6 +2,8 @@
 
 #include <QGraphicsItemGroup>
 #include <vector>
+#include <QPen>
+#include "Animations/AnimationController.h"
 #include "Objects/Wall.h"
 #include "Objects/Door.h"
 #include "Objects/Floor.h"
@@ -17,9 +19,10 @@ class Field : public QObject, public QGraphicsItemGroup {
 
 public:
     Field(int height_, int width_);
-    Field(int height_, int width_, const QString& field_code);
+    Field(const QString& field_code, Player* player_ = nullptr);
     Field(const Field& other);
     Field* Copy();
+    QString Code();
     const std::vector<Field*>& GetNeighbors();
     int Height() const;
     int Width() const;
@@ -31,14 +34,18 @@ public:
     void RemoveItem(int x, int y);
     void PutObject(Object* object, int x, int y);
     void RemoveObject(int x, int y);
+    AnimationController* GetAnimationController();
     void Interact();
     std::vector<Object*>& operator[](int x);
     const std::vector<Object*>& operator[](int x) const;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
-private:
+protected:
+    void ConfigureFrame();
+
     int height;
     int width;
+    QGraphicsItemGroup* frame;
     std::vector< std::vector<Object*> > field;
     std::vector<Field*> neighbors;
     Player* player;
@@ -48,8 +55,5 @@ private:
 signals:
     void GameFinished();
     void Clicked(Field* field_);
-
-public slots:
-    void FinishGame();
 
 };

@@ -1,21 +1,24 @@
 #include "Game.h"
 #include <cmath>
 
-Game::Game(int width_, int height_, int field_width_, int field_height_, QString field_str_, QWidget* parent) :
+Game::Game(int width_, int height_, QString field_code_, QWidget* parent) :
         QGraphicsView(parent),
-        interface(new ViewInterface(this)),
+        interface(new GameInterface(this)),
         animator(new AnimationController(this)),
         player(new Player),
         scene(new QGraphicsScene(this)),
-        k_scale(1),
-        field_width(field_width_),
-        field_height(field_height_),
-        field_str(field_str_),
+        k_scale(2),
+        field_code(field_code_),
         fields(50),
         connections(50),
-        layer(0) {
+        layer(0),
+        time(0),
+        travels(0),
+        moves(0),
+        timer(new QTimer(this)){
 
     resize(width_, height_);
+    scale(k_scale, k_scale);
     setFocus();
     setDragMode(DragMode::ScrollHandDrag);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -24,12 +27,10 @@ Game::Game(int width_, int height_, int field_width_, int field_height_, QString
     connect(player, SIGNAL(UpdateInventory(std::vector<Item*>)), interface, SLOT(UpdateInventory(std::vector<Item*>)));
     connect(animator, SIGNAL(Update()), this, SLOT(Update()));
 
-    field = new Field(field_width, field_height, field_str);
+    field = new Field(field_code, player);
 
     fields[0].push_back(field);
 
-    field->setPos(0, -32 * (field->Width() + 1) / 2);
-    field->PutPlayer(player);
     connect(field, SIGNAL(GameFinished()), this, SLOT(FinishGame()));
     connect(field, SIGNAL(Clicked(Field*)), this, SLOT(FieldClick(Field*)));
 
@@ -38,12 +39,20 @@ Game::Game(int width_, int height_, int field_width_, int field_height_, QString
 
     layers[field] = 0;
 
+    timer->setInterval(10);
+    connect(timer, SIGNAL(timeout()), this, SLOT(IncreaseTime()));
+    timer->start();
+
 }
 
 void Game::UpdateConnections(int layer_) {
     for (int i = 0; i < fields[layer_].size(); i++) {
         connections[layer_][i]->setLine(QLineF(fields[layer_][i]->pos(), fields[layer_][i]->GetNeighbors()[0]->pos()));
     }
+}
+
+AnimationController* Game::GetAnimationController() {
+    return animator;
 }
 
 void Game::wheelEvent(QWheelEvent *event) {
@@ -71,24 +80,33 @@ void Game::keyPressEvent(QKeyEvent *event) {
         case Qt::Key_W:
         case Qt::Key_Up:
             field->MovePlayer(0);
+            moves++;
             break;
         case Qt::Key_D:
         case Qt::Key_Right:
             field->MovePlayer(1);
+            moves++;
             break;
         case Qt::Key_S:
         case Qt::Key_Down:
             field->MovePlayer(2);
+            moves++;
             break;
         case Qt::Key_A:
         case Qt::Key_Left:
             field->MovePlayer(3);
+            moves++;
             break;
         case Qt::Key_E:
             field->Interact();
+            moves++;
+            break;
+        case Qt::Key_R:
+            emit RestartGame(field_code);
             break;
         case Qt::Key_F:
             field->TimeTravel(field = field->Copy());
+            travels++;
             layers[field] = ++layer;
             connect(field, SIGNAL(GameFinished()), this, SLOT(FinishGame()));
             connect(field, SIGNAL(Clicked(Field*)), this, SLOT(FieldClick(Field*)));
@@ -107,11 +125,12 @@ void Game::keyPressEvent(QKeyEvent *event) {
 //                animator->AddAnimationMove(field,
 //                                           {QPointF(field->x(), (2 * it - size) * layer_y),
 //                                            QPointF(layer_x, (2 * it - size) * layer_y)}, 5);
-                animator->AddAnimationMove(field, {QPointF(layer_x, (2 * it - size) * layer_y)}, 5);
+                animator->AddMoveAnimation(field, {QPointF(layer_x, (2 * it - size + 1) * layer_y)}, 5);
                 for (int i = 0; i < size; i++) {
-                    if (fields[layer][i] != field) {
-                        animator->AddAnimationMove(fields[layer][i], {QPointF(layer_x, (2 * i - size) * layer_y)}, 5);
+                    if (fields[layer][i] == field) {
+                        continue;
                     }
+                    animator->AddMoveAnimation(fields[layer][i], {QPointF(layer_x, (2 * i - size + 1) * layer_y)}, 5);
                 }
             }
             UpdateConnections(layer);
@@ -120,7 +139,8 @@ void Game::keyPressEvent(QKeyEvent *event) {
             scene->addItem(field);
             break;
         case Qt::Key_Escape:
-            FinishGame();
+            timer->stop();
+            ReturnToMainMenu();
             break;
         default:
             QGraphicsView::keyPressEvent(event);
@@ -128,24 +148,29 @@ void Game::keyPressEvent(QKeyEvent *event) {
 }
 
 void Game::FinishGame() {
-    emit GameFinished();
+    timer->stop();
+    emit GameFinished(time, travels, moves);
 }
 
 void Game::FieldClick(Field* field_) {
-//    const auto& neighbors = field->GetNeighbors();
-//    if (std::find(neighbors.begin(), neighbors.end(), field_) != neighbors.end()) {
-//        field->TimeTravel(field_);
-//        field = field_;
-//        layer = layers[field];
-//    }
-    if (field->TimeTravel(field_)) {
+    const auto& neighbors = field->GetNeighbors();
+    if (std::find(neighbors.begin(), neighbors.end(), field_) != neighbors.end() && field->TimeTravel(field_)) {
+        travels++;
         field = field_;
         layer = layers[field];
     }
+//    if (field->TimeTravel(field_)) {
+//        field = field_;
+//        layer = layers[field];
+//    }
 }
 
 void Game::Update() {
     for (int i = 1; i < connections.size(); i++) {
         UpdateConnections(i);
     }
+}
+
+void Game::IncreaseTime() {
+    time += 10;
 }

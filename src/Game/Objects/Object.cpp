@@ -15,6 +15,10 @@ Object* Object::Copy(Field *field_, int x_, int y_) const {
     return new Object(*this, field_, x, y);
 }
 
+QString Object::Code() const {
+    return "O";
+}
+
 bool Object::GetColliding() const {
     return colliding;
 }
@@ -50,6 +54,10 @@ void Object::SetY(int y_) {
 void Object::SetPos(int x_, int y_) {
     x = x_;
     y = y_;
+}
+
+AnimationController* Object::GetAnimationController() {
+    return field->GetAnimationController();
 }
 
 void Object::Interact(Player* player) {}

@@ -12,6 +12,7 @@ public:
     Item();
     Item(const Item& other);
     virtual Item* Copy() const;
+    virtual QString Code() const;
     bool GetColliding() const;
     void SetColliding(bool value);
     virtual void Press(Player *player = nullptr, Object *object = nullptr);

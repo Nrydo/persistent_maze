@@ -15,3 +15,7 @@ Void::Void(const Void& other, Field *field_, int x_, int y_) : Object(other, fie
 Void* Void::Copy(Field *field_, int x_, int y_) const {
     return new Void(*this, field_, x, y);
 }
+
+QString Void::Code() const {
+    return "V";
+}

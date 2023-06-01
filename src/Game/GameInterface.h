@@ -5,11 +5,11 @@
 #include "Player.h"
 #include "Items/Item.h"
 
-class ViewInterface : public QGraphicsView {
+class GameInterface : public QGraphicsView {
     Q_OBJECT
 
 public:
-    ViewInterface(QWidget* parent = nullptr);
+    GameInterface(QWidget* parent = nullptr);
     void wheelEvent(QWheelEvent* event) override;
 
 private:

@@ -2,7 +2,7 @@
 #include "Items/Item.h"
 #include "Field.h"
 
-Player::Player() : QGraphicsPixmapItem(QPixmap(":textures/player.png")) {
+Player::Player() : QGraphicsPixmapItem(QPixmap(":resources/textures/player2.png")), direction(2) {
     setZValue(2);
 }
 
@@ -28,6 +28,7 @@ int Player::GetDirection() const {
 
 void Player::SetDirection(int direction_) {
     direction = direction_;
+    setPixmap(QPixmap(":resources/textures/player" + QString::number(direction) + ".png"));
 }
 
 Field* Player::GetField() const {

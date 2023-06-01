@@ -1,22 +1,32 @@
 #include "Floor.h"
+#include "../Field.h"
+#include <QGraphicsScene.h>
 
 Floor::Floor(Field* field_, int x_, int y_) : Object(field_, x_, y_), item(nullptr) {
-    setPixmap(QPixmap(":textures/floor.png"));
+    setPixmap(QPixmap(":resources/textures/floor.png"));
 }
 
 Floor::Floor(Item* item_, Field* field_, int x_, int y_) : Object(field_, x_, y_), item(item_) {
-    setPixmap(QPixmap(":textures/floor.png"));
+    setPixmap(QPixmap(":resources/textures/floor.png"));
+    field->addToGroup(item);
+    item->setPos(pos());
 }
 
 Floor::Floor(const Floor& other, Field* field_, int x_, int y_) : Object(other, field_, x_, y_), item(nullptr) {
     if (other.item) {
         item = other.item->Copy();
+        field->addToGroup(item);
+        item->setPos(pos());
     }
     setPixmap(other.pixmap());
 }
 
 Floor* Floor::Copy(Field* field_, int x_, int y_) const {
     return new Floor(*this, field_, x, y);
+}
+
+QString Floor::Code() const {
+    return "F";
 }
 
 bool Floor::GetColliding() const {
@@ -35,9 +45,12 @@ void Floor::Press(Player* player) {
     }
 }
 
+#include <iostream>
+
 void Floor::SetItem(Item* item_) {
     item = item_;
-    update();
+    field->addToGroup(item);
+    item->setPos(pos());
 }
 
 Item* Floor::GetItem() {
@@ -45,16 +58,10 @@ Item* Floor::GetItem() {
 }
 
 void Floor::RemoveItem() {
+    field->removeFromGroup(item);
+    item->setPos(0, 0);
+    scene()->removeItem(item);
     item = nullptr;
-    update();
-}
-
-void Floor::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
-    QGraphicsPixmapItem::paint(painter, option, widget);
-    if (item) {
-        item->setPos(pos());
-        item->paint(painter, option, widget);
-    }
 }
 
 Floor::~Floor() {

@@ -14,8 +14,8 @@ class AnimationController : public QWidget {
 public:
     AnimationController(QWidget* parent = nullptr);
     void AddAnimation(Animation* animation);
-    void AddAnimationMove(QGraphicsItem* object, const std::deque<QPointF>& way, double speed);
-    void AddAnimationAppearance(QGraphicsItem* object, double speed);
+    void AddMoveAnimation(QGraphicsItem* object, const std::deque<QPointF>& way, double speed);
+    void AddAppearanceAnimation(QGraphicsItem* object, double speed);
     void Move();
 
 private:

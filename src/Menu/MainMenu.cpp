@@ -1,12 +1,13 @@
 #include "MainMenu.h"
 #include <QLabel>
+#include <QKeyEvent>
 
 MainMenu::MainMenu(int width_, int height_, QWidget *parent) :
         QWidget(parent),
-        levels_button(new QPushButton(this)),
-        editor_button(new QPushButton(this)),
-        exit_button(new QPushButton(this)),
-        level_selection(new LevelSelectionMenu(this)) {
+        levels_button(new QPushButton("Levels", this)),
+        editor_button(new QPushButton("Editor", this)),
+        exit_button(new QPushButton("Exit", this)),
+        level_selection(new LevelSelectionMenu(3, 3, this)) {
 
     resize(width_, height_);
 
@@ -32,31 +33,50 @@ MainMenu::MainMenu(int width_, int height_, QWidget *parent) :
     buttons_layout->addWidget(editor_button, 1, 0);
     buttons_layout->addWidget(exit_button, 2, 0);
 
-    levels_button->setText("Levels");
-    levels_button->setFont(QFont("Areal",  20, QFont::Bold));
+    levels_button->setFont(QFont("Areal",  30, QFont::Bold));
     levels_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(levels_button, SIGNAL(pressed()), this, SLOT(LevelPressed()));
 
-    editor_button->setText("Editor");
-    editor_button->setFont(QFont("Areal",  20, QFont::Bold));
+    editor_button->setFont(QFont("Areal",  30, QFont::Bold));
     editor_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-//    connect(levels_button, SIGNAL(pressed()), this, SLOT(LevelPressed()));
+    connect(editor_button, SIGNAL(pressed()), this, SLOT(EditorPressed()));
 
-    exit_button->setText("Exit");
-    exit_button->setFont(QFont("Areal",  20, QFont::Bold));
+    exit_button->setFont(QFont("Areal",  30, QFont::Bold));
     exit_button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(exit_button, SIGNAL(pressed()), this, SLOT(ExitPressed()));
 
     layout->addLayout(buttons_layout, 1, 1);
 
-    level_selection->resize(500, 500);
+    level_selection->resize(width(), height());
+    level_selection->hide();
+
+    connect(level_selection, SIGNAL(LevelSelected(int)), this, SLOT(StartLevel(int)));
 
 }
 
+void MainMenu::keyPressEvent(QKeyEvent *event) {
+    switch (event->key()) {
+        case Qt::Key_Escape:
+            ExitPressed();
+            break;
+        default:
+            QWidget::keyPressEvent(event);
+    }
+}
+
 void MainMenu::LevelPressed() {
-    emit StartGame();
+    level_selection->show();
+    level_selection->setFocus();
 }
 
 void MainMenu::ExitPressed() {
     emit Exit();
+}
+
+void MainMenu::StartLevel(int number) {
+    emit StartGame(number);
+}
+
+void MainMenu::EditorPressed() {
+    emit OpenEditor();
 }

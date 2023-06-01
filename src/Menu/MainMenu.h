@@ -17,13 +17,17 @@ private:
     QPushButton* editor_button;
     QPushButton* exit_button;
     LevelSelectionMenu* level_selection;
+    void keyPressEvent(QKeyEvent* event) override;
 
 signals:
-    void StartGame();
+    void StartGame(int number);
+    void OpenEditor();
     void Exit();
 
 private slots:
     void LevelPressed();
     void ExitPressed();
+    void StartLevel(int number);
+    void EditorPressed();
 
 };

@@ -1,9 +1,7 @@
-#include "ViewInterface.h"
+#include "GameInterface.h"
 #include "Game.h"
 
-#include <iostream>
-
-ViewInterface::ViewInterface(QWidget* parent) :
+GameInterface::GameInterface(QWidget* parent) :
         QGraphicsView(parent),
         scene(new QGraphicsScene(this)),
         inventory(new QGraphicsItemGroup) {
@@ -22,12 +20,12 @@ ViewInterface::ViewInterface(QWidget* parent) :
 
 }
 
-void ViewInterface::wheelEvent(QWheelEvent *event) {
+void GameInterface::wheelEvent(QWheelEvent *event) {
     dynamic_cast<Game*>(parent())->wheelEvent(event);
     QGraphicsView::wheelEvent(event);
 }
 
-void ViewInterface::UpdateInventory(const std::vector<Item*>& items) {
+void GameInterface::UpdateInventory(const std::vector<Item*>& items) {
     for (auto item : inventory->childItems()) {
         inventory->removeFromGroup(item);
     }

@@ -1,13 +1,30 @@
 <RCC>
     <qresource>
-        <file>textures/wall.png</file>
-        <file>textures/floor.png</file>
-        <file>textures/fragile_floor.png</file>
-        <file>textures/arrow_floor.png</file>
-        <file>textures/player.png</file>
-        <file>textures/key.png</file>
-        <file>textures/box.png</file>
-        <file>textures/door.png</file>
-        <file>textures/finish.png</file>
+        <file>resources/levels/game_levels/level1.txt</file>
+        <file>resources/levels/game_levels/level2.txt</file>
+        <file>resources/levels/game_levels/level3.txt</file>
+        <file>resources/levels/game_levels/level4.txt</file>
+        <file>resources/levels/game_levels/level5.txt</file>
+        <file>resources/levels/game_levels/level6.txt</file>
+        <file>resources/levels/game_levels/level7.txt</file>
+        <file>resources/levels/game_levels/level8.txt</file>
+        <file>resources/levels/game_levels/level9.txt</file>
+        <file>resources/textures/wall.png</file>
+        <file>resources/textures/floor.png</file>
+        <file>resources/textures/fragile_floor.png</file>
+        <file>resources/textures/arrow_floor.png</file>
+        <file>resources/textures/arrow_floor_0.png</file>
+        <file>resources/textures/arrow_floor_1.png</file>
+        <file>resources/textures/arrow_floor_2.png</file>
+        <file>resources/textures/arrow_floor_3.png</file>
+        <file>resources/textures/player0.png</file>
+        <file>resources/textures/player1.png</file>
+        <file>resources/textures/player2.png</file>
+        <file>resources/textures/player3.png</file>
+        <file>resources/textures/key.png</file>
+        <file>resources/textures/box.png</file>
+        <file>resources/textures/door.png</file>
+        <file>resources/textures/finish.png</file>
+        <file>resources/textures/eraser.png</file>
     </qresource>
 </RCC>

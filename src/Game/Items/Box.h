@@ -10,6 +10,7 @@ public:
     Box();
     Box(const Box& other);
     Box* Copy() const override;
+    QString Code() const override;
     void Interact(Player *player = nullptr, Object *object = nullptr) override;
 
 };

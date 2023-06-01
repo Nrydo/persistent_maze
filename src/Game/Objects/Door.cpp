@@ -3,12 +3,12 @@
 
 Door::Door(Field *field_, int x_, int y_) : Object(field_, x_, y_), color(Qt::transparent) {
     colliding = true;
-    setPixmap(QPixmap(":textures/door.png"));
+    setPixmap(QPixmap(":resources/textures/door.png"));
 }
 
 Door::Door(const QColor& color_, Field *field_, int x_, int y_) : Object(field_, x_, y_), color(color_)  {
     colliding = true;
-    setPixmap(QPixmap(":textures/door.png"));
+    setPixmap(QPixmap(":resources/textures/door.png"));
 }
 
 Door::Door(const Door& other, Field *field_, int x_, int y_) : Object(other, field_, x_, y_), color(other.color) {
@@ -17,6 +17,10 @@ Door::Door(const Door& other, Field *field_, int x_, int y_) : Object(other, fie
 
 Door* Door::Copy(Field *field_, int x_, int y_) const {
     return new Door(*this, field_, x, y);
+}
+
+QString Door::Code() const {
+    return "D";
 }
 
 void Door::Interact(Player* player) {
